@@ -4,6 +4,12 @@ const createApplication = async (req, res) => {
     try {
         const {company, role, status, location, jobUrl, notes, appliedDate} = req.body
 
+        if (!company || !role) {
+            return res.status(400).json({
+                message : "Company and role are required"
+            })
+        }
+
         const application = await Application.create({
             user : req.userId, company, role, status, location, jobUrl, notes, appliedDate
         })
@@ -23,8 +29,24 @@ const createApplication = async (req, res) => {
 
 const getApplications = async (req, res) => {
     try {
+        const {status, company, role} = req.query
+
+        const filter = {user : req.userId}
+
+        if (status) {
+            filter.status = status
+        }
+
+        if (company) {
+            filter.company = {$regex : company, $options : "i"}
+        }
+
+        if (role) {
+            filter.role = {$regex : role, $options : "i"}
+        }
+
         const applications = await Application.find({
-            user : req.userId
+            filter
         }).sort({createdAt : -1})
 
         res.status(200).json({
