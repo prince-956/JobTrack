@@ -1,6 +1,8 @@
 const express = require('express')
 
-const {createApplication, getApplications, getApplicationById, updateApplication, deleteApplication} = require('../controllers/applicationController')
+const {createApplication, getApplications, getApplicationById,
+    updateApplication, deleteApplication,
+    updateApplicationStatus} = require('../controllers/applicationController')
 
 const authMiddleware = require('../middleware/authMiddleware')
 
@@ -11,5 +13,6 @@ router.get('/', authMiddleware, getApplications)
 router.get('/:id', authMiddleware, getApplicationById)
 router.put('/:id', authMiddleware, updateApplication)
 router.delete('/:id', authMiddleware, deleteApplication)
+router.patch('/:id/status', authMiddleware, updateApplicationStatus)
 
 module.exports = router

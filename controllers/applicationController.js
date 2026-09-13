@@ -115,4 +115,41 @@ const deleteApplication = async (req, res) => {
     }
 }
 
-module.exports = {createApplication, getApplications, getApplicationById, updateApplication, deleteApplication}
+const updateApplicationStatus = async (req, res) => {
+    try {
+        const {status} = req.body
+
+        if (!status) {
+            return res.status(400).json({
+                message : "Status is required"
+            })
+        }
+
+        const application = await Application.findOneAndUpdate(
+            {_id : req.params.id, user : req.userId},
+            {status},
+            {new : true, runValidators : true}
+        )
+
+        if (!application) {
+            return res.status(404).json({
+                message : "Application not found"
+            })
+        }
+
+        res.status(200).json({
+            message : "Application status updated successfully",
+            application
+        })
+    }
+    catch (error) {
+        res.status(500).json({
+            message : "Server error",
+            error : error.message
+        })
+    }
+}
+
+module.exports = {createApplication, getApplications, getApplicationById,
+    updateApplication, deleteApplication,
+    updateApplicationStatus}
