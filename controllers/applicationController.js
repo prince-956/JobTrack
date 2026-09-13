@@ -100,7 +100,7 @@ const updateApplication = async (req, res) => {
                 message: "Invalid application ID"
             })
         }
-        
+
         const application = await Application.findOneAndUpdate(
             {_id : req.params.id, user : req.userId},
             req.body,
@@ -191,6 +191,35 @@ const updateApplicationStatus = async (req, res) => {
     }
 }
 
+const getApplicationStats = async (req, res) => {
+    try {
+        const stats = await Application.aggregate([
+            {$match : {user : new mongoose.Types.ObjectId(req.userId)}},
+            {$group : {_id : "$status", count : {$sum : 1}}}
+        ])
+
+        const result = {
+            total: 0, saved: 0, applied: 0, oa: 0,
+            interview: 0, offer: 0, rejected: 0, accepted: 0
+        }
+
+        stats.forEach((item) => {
+            const key = item._id.toLowerCase();
+            result[key] = item.count;
+            result.total += item.count;
+        });
+
+        res.status(200).json(result);
+
+    }
+    catch (error) {
+        res.status(500).json({
+            message : "Server error",
+            error : error.message
+        })
+    }
+}
+
 module.exports = {createApplication, getApplications, getApplicationById,
     updateApplication, deleteApplication,
-    updateApplicationStatus}
+    updateApplicationStatus, getApplicationStats}
