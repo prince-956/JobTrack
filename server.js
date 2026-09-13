@@ -4,6 +4,7 @@ const express = require('express')
 const connectDB = require('./config/db')
 const authRoutes = require('./routes/authRoutes')
 const authMiddleware = require('./middleware/authMiddleware')
+const applicationRoutes = require('./routes/applicationRoutes')
 
 const app = express()
 
@@ -11,6 +12,7 @@ connectDB()
 
 app.use(express.json())
 app.use('/api/auth', authRoutes)
+app.use('/api/applications', applicationRoutes)
 
 app.get('/', (req, res) => {
     res.json({
