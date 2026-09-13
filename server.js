@@ -3,6 +3,7 @@ require('dotenv').config()
 const express = require('express')
 const connectDB = require('./config/db')
 const authRoutes = require('./routes/authRoutes')
+const authMiddleware = require('./middleware/authMiddleware')
 
 const app = express()
 
@@ -14,6 +15,13 @@ app.use('/api/auth', authRoutes)
 app.get('/', (req, res) => {
     res.json({
         message : "JobTrack API is running"
+    })
+})
+
+app.get('/api/test-protected', authMiddleware, (req, res) => {
+    res.json({
+        message : "You accessed a protected route",
+        userId : req.userId
     })
 })
 
