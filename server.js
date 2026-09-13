@@ -1,9 +1,12 @@
-const express = require('express')
 require('dotenv').config()
+
+const express = require('express')
+const connectDB = require('./config/db')
 
 const app = express()
 
-// middleware
+connectDB()
+
 app.use(express.json())
 
 app.get('/', (req, res) => {
@@ -12,7 +15,6 @@ app.get('/', (req, res) => {
     })
 })
 
-// start server
 const PORT = process.env.PORT || 5000
 
 app.listen(PORT, () => {
