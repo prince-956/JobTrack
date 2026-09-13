@@ -1,3 +1,4 @@
+const mongoose = require('mongoose')
 const Application = require('../models/Application')
 
 const createApplication = async (req, res) => {
@@ -64,6 +65,12 @@ const getApplications = async (req, res) => {
 
 const getApplicationById = async (req, res) => {
     try {
+        if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+            return res.status(400).json({
+                message : "Invalid application ID"
+            })
+        }
+
         const application = await Application.findOne({
             _id : req.params.id, user : req.userId
         })
@@ -88,6 +95,12 @@ const getApplicationById = async (req, res) => {
 
 const updateApplication = async (req, res) => {
     try {
+        if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+            return res.status(400).json({
+                message: "Invalid application ID"
+            })
+        }
+        
         const application = await Application.findOneAndUpdate(
             {_id : req.params.id, user : req.userId},
             req.body,
@@ -115,6 +128,12 @@ const updateApplication = async (req, res) => {
 
 const deleteApplication = async (req, res) => {
     try {
+        if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+            return res.status(400).json({
+                message: "Invalid application ID"
+            })
+        }
+
         const application = await Application.findOneAndDelete({
             _id : req.params.id, user : req.userId
         })
