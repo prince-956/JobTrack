@@ -10,10 +10,10 @@ const router = express.Router()
 
 router.post('/', authMiddleware, createApplication)
 router.get('/', authMiddleware, getApplications)
+router.get('/stats', authMiddleware, getApplicationStats);
 router.get('/:id', authMiddleware, getApplicationById)
 router.put('/:id', authMiddleware, updateApplication)
 router.delete('/:id', authMiddleware, deleteApplication)
 router.patch('/:id/status', authMiddleware, updateApplicationStatus)
-router.get('/stats', authMiddleware, getApplicationStats);
 
 module.exports = router

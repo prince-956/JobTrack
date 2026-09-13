@@ -32,7 +32,7 @@ const getApplications = async (req, res) => {
     try {
         const {status, company, role} = req.query
 
-        const filter = {user : req.userId}
+        const filter = {user : new mongoose.Types.ObjectId(req.userId)}
 
         if (status) {
             filter.status = status
@@ -46,9 +46,10 @@ const getApplications = async (req, res) => {
             filter.role = {$regex : role, $options : "i"}
         }
 
-        const applications = await Application.find({
-            filter
-        }).sort({createdAt : -1})
+        const applications = await Application.aggregate([
+            {$match : filter},
+            {$sort : {createdAt : -1}}
+        ]);
 
         res.status(200).json({
             count : applications.length,
